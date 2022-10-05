@@ -15,9 +15,6 @@ class User(
             if (isEmailCorporate) UserType.Employee
             else UserType.Customer
 
-        this.email = newEmail
-        this.type = newType
-
         if (type != newType) {
             val delta: Int =
                 if (newType == UserType.Employee) 1
