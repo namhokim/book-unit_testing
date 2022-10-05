@@ -10,6 +10,7 @@ class UserFactory {
                 userId = userId,
                 email = data.email,
                 type = data.type,
+                isEmailConfirmed = false,
             )
         }
     }
