@@ -6,7 +6,7 @@ class User(
     var type: UserType,
     private val isEmailConfirmed: Boolean,
 ) {
-    fun changeEmail(newEmail: String, company: Company): String? {
+    fun changeEmail(newEmail: String, getCompany: () -> Company): String? {
         if (isEmailConfirmed) {
             return "Can't change a confirmed email"
         }
@@ -15,6 +15,7 @@ class User(
             return null
         }
 
+        val company: Company = getCompany()
         val isEmailCorporate: Boolean = company.isEmailCorporate(email = newEmail)
         val newType: UserType =
             if (isEmailCorporate) UserType.Employee
