@@ -15,15 +15,18 @@ class UserController(
         val userDto: UserDto = database.getUserById(userId = userId)
         val user: User = UserFactory.create(userId = userId, data = userDto)
 
-        val companyDto: CompanyDto = database.getCompany()
-        val company: Company = CompanyFactory.create(data = companyDto)
+        var company: Company? = null
 
-        val error: String? = user.changeEmail(newEmail = newEmail, company = company)
+        val error: String? = user.changeEmail(newEmail = newEmail) {
+            val companyDto: CompanyDto = database.getCompany()
+            company = CompanyFactory.create(data = companyDto)
+            company!!
+        }
         if (error != null) {
             return error
         }
 
-        database.saveCompany(company = company)
+        database.saveCompany(company = company!!)
         database.saveUser(user = user)
         messageBus.sendEmailChangedMessage(userId = userId, newEmail = newEmail)
 
