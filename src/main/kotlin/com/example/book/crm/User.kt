@@ -5,13 +5,12 @@ class User(
     var email: String,
     var type: UserType
 ) {
-    fun changeEmail(newEmail: String, companyDomainName: String, numberOfEmployees: Int): Int {
+    fun changeEmail(newEmail: String, company: Company) {
         if (email == newEmail) {
-            return numberOfEmployees
+            return
         }
 
-        val emailDomain: String = newEmail.split('@')[1]
-        val isEmailCorporate: Boolean = emailDomain == companyDomainName
+        val isEmailCorporate: Boolean = company.isEmailCorporate(email = newEmail)
         val newType: UserType =
             if (isEmailCorporate) UserType.Employee
             else UserType.Customer
@@ -19,13 +18,14 @@ class User(
         this.email = newEmail
         this.type = newType
 
-        return if (type != newType) {
+        if (type != newType) {
             val delta: Int =
                 if (newType == UserType.Employee) 1
                 else -1
-            numberOfEmployees + delta
-        } else {
-            numberOfEmployees
+            company.changeNumberOfEmployees(delta = delta)
         }
+
+        this.email = newEmail
+        this.type = newType
     }
 }

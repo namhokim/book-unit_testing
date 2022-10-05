@@ -1,6 +1,7 @@
 package com.example.book.crm
 
 import com.example.book.crm.bus.MessageBus
+import com.example.book.crm.factory.CompanyFactory
 import com.example.book.crm.factory.UserFactory
 import com.example.book.crm.repository.CompanyDto
 import com.example.book.crm.repository.Database
@@ -15,11 +16,11 @@ class UserController(
         val user: User = UserFactory.create(userId = userId, data = userDto)
 
         val companyDto: CompanyDto = database.getCompany()
+        val company: Company = CompanyFactory.create(data = companyDto)
 
-        val newNumberOfEmployees: Int = user.changeEmail(
-            newEmail = newEmail, companyDto.companyDomainName, companyDto.numberOfEmployees)
+        user.changeEmail(newEmail = newEmail, company = company)
 
-        database.saveCompany(newNumber = newNumberOfEmployees)
+        database.saveCompany(company = company)
         database.saveUser(user = user)
         messageBus.sendEmailChangedMessage(userId = userId, newEmail = newEmail)
     }

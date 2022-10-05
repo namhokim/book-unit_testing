@@ -1,5 +1,6 @@
 package com.example.book.crm.repository
 
+import com.example.book.crm.Company
 import com.example.book.crm.User
 import com.example.book.crm.UserType
 
@@ -21,8 +22,8 @@ class Database {
         numberOfEmployees = numberOfEmployees,
     )
 
-    fun saveCompany(newNumber: Int) {
-        numberOfEmployees += newNumber
+    fun saveCompany(company: Company) {
+        numberOfEmployees = company.numberOfEmployees
     }
 
     fun saveUser(user: User) {
