@@ -11,18 +11,23 @@ class UserController(
     private val database: Database = Database(),
     private val messageBus: MessageBus = MessageBus(),
 ) {
-    fun changeEmail(userId: Int, newEmail: String) {
+    fun changeEmail(userId: Int, newEmail: String): String {
         val userDto: UserDto = database.getUserById(userId = userId)
         val user: User = UserFactory.create(userId = userId, data = userDto)
 
         val companyDto: CompanyDto = database.getCompany()
         val company: Company = CompanyFactory.create(data = companyDto)
 
-        user.changeEmail(newEmail = newEmail, company = company)
+        val error: String? = user.changeEmail(newEmail = newEmail, company = company)
+        if (error != null) {
+            return error
+        }
 
         database.saveCompany(company = company)
         database.saveUser(user = user)
         messageBus.sendEmailChangedMessage(userId = userId, newEmail = newEmail)
+
+        return "OK"
     }
 }
 

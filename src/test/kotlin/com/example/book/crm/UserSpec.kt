@@ -9,9 +9,21 @@ import io.kotest.matchers.shouldBe
 
 class UserSpec : FunSpec({
 
+    test("Not confirmed email from non corporate to corporate") {
+        val company = Company(companyDomainName = "mycorp.com", numberOfCompanyEmployees = 1)
+        val sut = User(userId = 1, email = "user@gmail.com", type = UserType.Customer, isEmailConfirmed = true)
+
+        val result: String? = sut.changeEmail(newEmail = "new@mycorp.com", company = company)
+
+        company.numberOfEmployees shouldBe 1
+        sut.email shouldBe "user@gmail.com"
+        sut.type shouldBe UserType.Customer
+        result shouldBe "Can't change a confirmed email"
+    }
+
     test("Changing email from non corporate to corporate") {
         val company = Company(companyDomainName = "mycorp.com", numberOfCompanyEmployees = 1)
-        val sut = User(userId = 1, email = "user@gmail.com", type = UserType.Customer)
+        val sut = User(userId = 1, email = "user@gmail.com", type = UserType.Customer, isEmailConfirmed = false)
 
         sut.changeEmail(newEmail = "new@mycorp.com", company = company)
 
@@ -22,7 +34,7 @@ class UserSpec : FunSpec({
 
     test("Changing email from corporate to non corporate") {
         val company = Company(companyDomainName = "mycorp.com", numberOfCompanyEmployees = 1)
-        val sut = User(userId = 1, email = "new@mycorp.com", type = UserType.Employee)
+        val sut = User(userId = 1, email = "new@mycorp.com", type = UserType.Employee, isEmailConfirmed = false)
 
         sut.changeEmail(newEmail = "user@gmail.com", company = company)
 
@@ -33,7 +45,7 @@ class UserSpec : FunSpec({
 
     test("Changing email without changing user type") {
         val company = Company(companyDomainName = "mycorp.com", numberOfCompanyEmployees = 1)
-        val sut = User(userId = 1, email = "user@gmail.com", type = UserType.Customer)
+        val sut = User(userId = 1, email = "user@gmail.com", type = UserType.Customer, isEmailConfirmed = false)
 
         sut.changeEmail(newEmail = "group@gmail.com", company = company)
 
@@ -44,7 +56,7 @@ class UserSpec : FunSpec({
 
     test("Changing email to the same one") {
         val company = Company(companyDomainName = "mycorp.com", numberOfCompanyEmployees = 1)
-        val sut = User(userId = 1, email = "user@gmail.com", type = UserType.Customer)
+        val sut = User(userId = 1, email = "user@gmail.com", type = UserType.Customer, isEmailConfirmed = false)
 
         sut.changeEmail(newEmail = "user@gmail.com", company = company)
 

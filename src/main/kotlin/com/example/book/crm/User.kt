@@ -3,11 +3,16 @@ package com.example.book.crm
 class User(
     val userId: Int,
     var email: String,
-    var type: UserType
+    var type: UserType,
+    private val isEmailConfirmed: Boolean,
 ) {
-    fun changeEmail(newEmail: String, company: Company) {
+    fun changeEmail(newEmail: String, company: Company): String? {
+        if (isEmailConfirmed) {
+            return "Can't change a confirmed email"
+        }
+
         if (email == newEmail) {
-            return
+            return null
         }
 
         val isEmailCorporate: Boolean = company.isEmailCorporate(email = newEmail)
@@ -24,5 +29,7 @@ class User(
 
         this.email = newEmail
         this.type = newType
+
+        return null
     }
 }
